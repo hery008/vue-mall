@@ -3,8 +3,11 @@ import router from './router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import VueLazyLoad from 'vue-lazyload'
+import VueCookie from 'vue-cookie'
+import store from './store'
 import App from './App.vue'
 Vue.use(VueAxios, axios);
+Vue.use(VueCookie);
 Vue.use(VueLazyLoad,{
   loading:'/imgs/loading-svg/loading-bars.svg'
 })
@@ -28,8 +31,10 @@ axios.interceptors.response.use(function(response){
     return res.data;
   }else if(res.status == 10){
     window.location.href = '/#/login';
+    return Promise.reject(res);
   }else{
-   alert(res.msg)
+    alert(res.msg)
+    return Promise.reject(res);
   }
 });
 
@@ -37,6 +42,7 @@ axios.interceptors.response.use(function(response){
 Vue.config.productionTip = false
 
 new Vue({
+  store,
   router,
   render: h => h(App),
 }).$mount('#app')
